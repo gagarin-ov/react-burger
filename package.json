@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "run dev": "npm run dev",
     "build": "vite build",
     "commit": "cz",
     "check": "stylelint && eslint src/",
