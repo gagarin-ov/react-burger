@@ -5,7 +5,10 @@ import {
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+
+import { OrderDetails } from '../app/order-details/order-details';
+import { Modal } from '../modal/modal';
 
 import type { TIngredient } from '@utils/types';
 
@@ -46,6 +49,17 @@ export const BurgerConstructor = ({
     [ingredients]
   );
 
+  const [isOrderDetailsVisible, setIsOrderDetailsVisible] = useState(false);
+  const orderNumber = useMemo<number>(() => Math.floor(Math.random() * 10000), []);
+
+  function handleOpenModal(): void {
+    setIsOrderDetailsVisible(true);
+  }
+
+  function handleCloseModal(): void {
+    setIsOrderDetailsVisible(false);
+  }
+
   const total = useMemo(
     () => bun.price + body.reduce((sum, ingredient) => sum + ingredient.price, 0),
     [bun, body]
@@ -56,7 +70,7 @@ export const BurgerConstructor = ({
   };
 
   const handleSubmit = (): void => {
-    console.log('оформление');
+    handleOpenModal();
   };
 
   return (
@@ -113,6 +127,11 @@ export const BurgerConstructor = ({
         >
           Оформить заказ
         </Button>
+        {isOrderDetailsVisible && (
+          <Modal onClose={handleCloseModal}>
+            <OrderDetails orderNumber={orderNumber} />
+          </Modal>
+        )}
       </div>
     </section>
   );
