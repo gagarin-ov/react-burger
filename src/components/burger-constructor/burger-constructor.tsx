@@ -5,10 +5,10 @@ import {
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { OrderDetails } from '../app/order-details/order-details';
 import { Modal } from '../modal/modal';
+import { OrderDetails } from '../order-details/order-details';
 
 import type { TIngredient } from '@utils/types';
 
@@ -52,12 +52,10 @@ export const BurgerConstructor = ({
   const [isOrderDetailsVisible, setIsOrderDetailsVisible] = useState(false);
   const orderNumber = useMemo<number>(() => Math.floor(Math.random() * 10000), []);
 
+  const handleCloseModal = useCallback(() => setIsOrderDetailsVisible(false), []);
+
   function handleOpenModal(): void {
     setIsOrderDetailsVisible(true);
-  }
-
-  function handleCloseModal(): void {
-    setIsOrderDetailsVisible(false);
   }
 
   const total = useMemo(

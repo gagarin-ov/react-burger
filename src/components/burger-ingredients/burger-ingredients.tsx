@@ -23,6 +23,7 @@ export const BurgerIngredients = ({
 }: TBurgerIngredientsProps): React.JSX.Element => {
   const counts = useMemo<Record<string, number>>(
     () => ({
+      //сделано без проверки количества, по сути моковые данные для счетчика
       [ingredients[0]._id]: 1,
       [ingredients[1]._id]: 1,
     }),

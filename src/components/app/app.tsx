@@ -5,7 +5,7 @@ import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
 import ErrorBoundary from '@components/error-boundary/error-boundary';
-import { API_URL } from '@utils/const';
+import { getData } from '@utils/request';
 
 import type { TIngredient } from '@utils/types';
 
@@ -17,8 +17,7 @@ export const App = (): React.JSX.Element => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/ingredients`)
-      .then((res) => res.json() as Promise<{ data: TIngredient[] }>)
+    getData<TIngredient[]>('/ingredients')
       .then(({ data }) => setIngredients(data))
       .catch((err: Error) => setError(err.message))
       .finally(() => setIsLoading(false));

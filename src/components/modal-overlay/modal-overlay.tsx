@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import styles from './modal-overlay.module.css';
 
 type TModalOverlayProps = {
@@ -7,14 +5,6 @@ type TModalOverlayProps = {
 };
 
 export const ModalOverlay = ({ onClose }: TModalOverlayProps): React.JSX.Element => {
-  useEffect(() => {
-    const handleEscape = (evt: KeyboardEvent): void => {
-      if (evt.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleEscape);
-    return (): void => document.removeEventListener('keydown', handleEscape);
-  }, [onClose]);
-
   return <div className={styles.overlay} onClick={onClose} />;
 };
 

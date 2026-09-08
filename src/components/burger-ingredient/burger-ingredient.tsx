@@ -1,8 +1,8 @@
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { IngredientDetails } from '../app/ingredient-details/ingredient-details';
+import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { Modal } from '../modal/modal';
 
 import type { TIngredient } from '@utils/types';
@@ -24,9 +24,7 @@ export const BurgerIngredient = ({
     setIsDetailsVisible(true);
   }
 
-  function handleCloseModal(): void {
-    setIsDetailsVisible(false);
-  }
+  const handleCloseModal = useCallback(() => setIsDetailsVisible(false), []);
 
   return (
     <li className={styles.card} onClick={handleOpenModal}>
