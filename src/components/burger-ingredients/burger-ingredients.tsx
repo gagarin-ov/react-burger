@@ -1,6 +1,6 @@
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { BurgerIngredient } from '@components/burger-ingredient/burger-ingredient';
 
@@ -12,15 +12,23 @@ type TBurgerIngredientsProps = {
   ingredients: TIngredient[];
 };
 
-const GROUPS = [
-  { type: 'bun', title: 'Булки' },
-  { type: 'sauce', title: 'Соусы' },
-  { type: 'main', title: 'Начинки' },
-];
-
 export const BurgerIngredients = ({
   ingredients,
 }: TBurgerIngredientsProps): React.JSX.Element => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const bunRef = useRef<HTMLHeadingElement>(null);
+  const sauceRef = useRef<HTMLHeadingElement>(null);
+  const mainRef = useRef<HTMLHeadingElement>(null);
+
+  const GROUPS = useMemo(
+    () => [
+      { type: 'bun', title: 'Булки', groupRef: bunRef },
+      { type: 'main', title: 'Начинки', groupRef: mainRef },
+      { type: 'sauce', title: 'Соусы', groupRef: sauceRef },
+    ],
+    []
+  );
+
   const counts = useMemo<Record<string, number>>(
     () => ({
       //сделано без проверки количества, по сути моковые данные для счетчика
@@ -30,13 +38,38 @@ export const BurgerIngredients = ({
     [ingredients]
   );
 
+  const [activeTab, setActiveTab] = useState('bun');
+
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current) return;
+
+    const containerTop = scrollRef.current.getBoundingClientRect().top;
+
+    // Ищем заголовок, ближайший к верхней границе контейнера
+    let closest = 'bun';
+    let minDistance = Infinity;
+
+    for (const { type, groupRef } of GROUPS) {
+      if (!groupRef.current) continue;
+      const distance = Math.abs(
+        groupRef.current.getBoundingClientRect().top - containerTop
+      );
+      if (distance < minDistance) {
+        minDistance = distance;
+        closest = type;
+      }
+    }
+
+    setActiveTab(closest);
+  }, []);
+
   return (
     <section className={styles.burger_ingredients}>
       <nav>
         <ul className={styles.menu}>
           <Tab
             value="bun"
-            active={true}
+            active={activeTab === 'bun'}
             onClick={() => {
               /* TODO */
             }}
@@ -45,7 +78,7 @@ export const BurgerIngredients = ({
           </Tab>
           <Tab
             value="main"
-            active={false}
+            active={activeTab === 'main'}
             onClick={() => {
               /* TODO */
             }}
@@ -54,7 +87,7 @@ export const BurgerIngredients = ({
           </Tab>
           <Tab
             value="sauce"
-            active={false}
+            active={activeTab === 'sauce'}
             onClick={() => {
               /* TODO */
             }}
@@ -63,10 +96,16 @@ export const BurgerIngredients = ({
           </Tab>
         </ul>
       </nav>
-      <div className={clsx(styles.list, 'custom-scroll', 'mt-10')}>
-        {GROUPS.map(({ type, title }) => (
+      <div
+        ref={scrollRef}
+        className={clsx(styles.list, 'custom-scroll', 'mt-10')}
+        onScroll={() => handleScroll()}
+      >
+        {GROUPS.map(({ type, title, groupRef }) => (
           <div key={type}>
-            <h2 className="text text_type_main-medium">{title}</h2>
+            <h2 ref={groupRef} className="text text_type_main-medium">
+              {title}
+            </h2>
             <ul className={clsx(styles.cards, 'mt-6', 'pl-4')}>
               {ingredients
                 .filter((ingredient) => ingredient.type === type)
