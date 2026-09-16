@@ -5,7 +5,9 @@ import {
   type EnhancedStore,
 } from '@reduxjs/toolkit';
 
-const rootReducer = combineSlices(burgerApi);
+import { ingredientsSlice } from './ingredients/slice';
+
+const rootReducer = combineSlices(burgerApi, ingredientsSlice);
 
 export type TState = ReturnType<typeof rootReducer>;
 

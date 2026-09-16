@@ -1,6 +1,8 @@
+import { setSelectedIngredient } from '@/services/ingredients/slice';
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { Modal } from '../modal/modal';
@@ -20,7 +22,10 @@ export const BurgerIngredient = ({
 }: TBurgerIngredientProps): React.JSX.Element => {
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
+  const dispatch = useDispatch();
+
   function handleOpenModal(): void {
+    dispatch(setSelectedIngredient(ingredient));
     setIsDetailsVisible(true);
   }
 
