@@ -1,0 +1,42 @@
+.element {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 536px;
+  min-height: 80px;
+  padding: 16px 24px;
+  color: #f2f2f3;
+  font-size: 16px;
+  font-family: 'Jet Brains Mono', monospace;
+  line-height: 24px;
+  background: var(--background-element);
+  border-radius: var(--common-border-radius-s);
+}
+
+.text {
+  display: inline-flex;
+  flex-grow: 1;
+  align-items: center;
+  margin-right: 20px;
+  line-height: 24px;
+  text-align: left;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.posBottom {
+  border-radius: var(--bottom-constructor-item-border-radius);
+}
+
+.posTop {
+  border-radius: var(--top-constructor-item-border-radius);
+}
+
+.isAcceptable {
+  border: 1px solid #991da4;
+}

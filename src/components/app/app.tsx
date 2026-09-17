@@ -1,27 +1,21 @@
+import { getErrorMessage } from '@/utils/request';
+import { useGetIngredientsQuery } from '@api/burger-api';
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
 import ErrorBoundary from '@components/error-boundary/error-boundary';
-import { getData } from '@utils/request';
+import { DndContext } from '@contexts/dnd-context';
 
 import type { TIngredient } from '@utils/types';
 
 import styles from './app.module.css';
 
 export const App = (): React.JSX.Element => {
-  const [ingredients, setIngredients] = useState<TIngredient[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    getData<TIngredient[]>('/ingredients')
-      .then(({ data }) => setIngredients(data))
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setIsLoading(false));
-  }, []);
+  const { isLoading, error } = useGetIngredientsQuery();
+  const [draggingType, setDraggingType] = useState<TIngredient['type'] | null>(null);
 
   return (
     <div className={styles.app}>
@@ -33,13 +27,15 @@ export const App = (): React.JSX.Element => {
         <main className={styles.main}>
           {isLoading && <Preloader />}
           {error && (
-            <p className="text text_type_main-default">Ошибка загрузки: {error}</p>
+            <p className="text text_type_main-default">
+              Ошибка загрузки {getErrorMessage(error)}
+            </p>
           )}
           {!isLoading && !error && (
-            <>
-              <BurgerIngredients ingredients={ingredients} />
-              <BurgerConstructor ingredients={ingredients} />
-            </>
+            <DndContext value={{ draggingType, setDraggingType }}>
+              <BurgerIngredients />
+              <BurgerConstructor />
+            </DndContext>
           )}
         </main>
       </ErrorBoundary>
