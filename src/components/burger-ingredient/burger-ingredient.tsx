@@ -1,11 +1,10 @@
-import { setSelectedIngredient } from '@/services/ingredients/slice';
+import { useDndContext } from '@/contexts/dnd-context';
+import { setSelectedIngredient } from '@/services/ingredient-details/slice';
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useCallback, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useDrag } from 'react-dnd';
 import { useDispatch } from 'react-redux';
-
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
-import { Modal } from '../modal/modal';
 
 import type { TIngredient } from '@utils/types';
 
@@ -20,19 +19,37 @@ export const BurgerIngredient = ({
   ingredient,
   count = 0,
 }: TBurgerIngredientProps): React.JSX.Element => {
-  const [isDetailsVisible, setIsDetailsVisible] = useState(false);
-
   const dispatch = useDispatch();
+
+  const ref = useRef<HTMLLIElement>(null);
+  const { setDraggingType } = useDndContext();
+  const [{ isDragging }, dragRef] = useDrag<TIngredient, void, { isDragging: boolean }>(
+    () => ({
+      type: ingredient.type === 'bun' ? 'bun' : 'ingredient',
+      item: ingredient,
+      end: (): void => setDraggingType(null),
+      collect: (monitor): { isDragging: boolean } => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }),
+    [ingredient, setDraggingType]
+  );
+  dragRef(ref);
+
+  useEffect(() => {
+    if (isDragging) setDraggingType(ingredient.type);
+  }, [isDragging, ingredient.type, setDraggingType]);
 
   function handleOpenModal(): void {
     dispatch(setSelectedIngredient(ingredient));
-    setIsDetailsVisible(true);
   }
 
-  const handleCloseModal = useCallback(() => setIsDetailsVisible(false), []);
-
   return (
-    <li className={styles.card} onClick={handleOpenModal}>
+    <li
+      className={`${styles.card} ${isDragging ? styles.isDragging : ''}`}
+      ref={ref}
+      onClick={handleOpenModal}
+    >
       {count > 0 && <Counter count={count} size="default" />}
       <img className={styles.image} src={ingredient.image} alt={ingredient.name} />
       <p className={clsx(styles.price, 'text', 'text_type_digits-default', 'mt-1')}>
@@ -42,11 +59,6 @@ export const BurgerIngredient = ({
       <p className={clsx(styles.name, 'text', 'text_type_main-default', 'mt-1')}>
         {ingredient.name}
       </p>
-      {isDetailsVisible && (
-        <Modal header="Детали ингредиента" onClose={handleCloseModal}>
-          <IngredientDetails ingredient={ingredient} />
-        </Modal>
-      )}
     </li>
   );
 };

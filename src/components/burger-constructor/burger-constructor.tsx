@@ -1,115 +1,140 @@
+import { usePostOrderMutation } from '@/api/burger-api';
 import {
-  Button,
-  ConstructorElement,
-  CurrencyIcon,
-  DragIcon,
-} from '@krgaa/react-developer-burger-ui-components';
+  addIngredient,
+  getBun,
+  getIngredients,
+  getTotalPrice,
+  setBun,
+} from '@/services/burger-constructor/slice';
+import { setOrder } from '@/services/order/slice';
+import { getErrorMessage } from '@/utils/request';
+import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { BurgerPlaceholder } from '../burger-placeholder/burger-placeholder';
+import { ConstructorBun } from '../constructor-bun/constructor-bun';
+import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
 
+import type { SerializedError } from '@reduxjs/toolkit';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
-type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
-};
+export const BurgerConstructor = (): React.JSX.Element => {
+  const [postOrder, { isLoading }] = usePostOrderMutation();
+  const [orderError, setOrderError] = useState<Error | null>(null);
 
-type TBurgerContents = {
-  bun: TIngredient;
-  body: TIngredient[];
-};
-
-const NO_BUN: TIngredient = {
-  _id: '60666c42cc7b410027a1a9b1',
-  name: 'Булка не выбрана',
-  type: 'bun',
-  proteins: 0,
-  fat: 0,
-  carbohydrates: 0,
-  calories: 0,
-  price: 0,
-  image: 'https://code.s3.yandex.net/react/code/bun-02.png',
-  image_mobile: 'https://code.s3.yandex.net/react/code/bun-02-mobile.png',
-  image_large: 'https://code.s3.yandex.net/react/code/bun-02-large.png',
-  __v: 0,
-};
-
-export const BurgerConstructor = ({
-  ingredients,
-}: TBurgerConstructorProps): React.JSX.Element => {
-  const { bun, body } = useMemo<TBurgerContents>(
-    () => ({
-      bun: ingredients.find((x) => x.type === 'bun') ?? NO_BUN,
-      body: ingredients.filter((x) => x.type !== 'bun'),
-    }),
-    [ingredients]
-  );
+  const dispatch = useDispatch();
+  const bun = useSelector(getBun);
+  const ingredients = useSelector(getIngredients);
 
   const [isOrderDetailsVisible, setIsOrderDetailsVisible] = useState(false);
-  const orderNumber = useMemo<number>(() => Math.floor(Math.random() * 10000), []);
-
   const handleCloseModal = useCallback(() => setIsOrderDetailsVisible(false), []);
+  const handleOpenModal = useCallback(() => setIsOrderDetailsVisible(true), []);
 
-  function handleOpenModal(): void {
-    setIsOrderDetailsVisible(true);
-  }
+  const total = useSelector(getTotalPrice);
 
-  const total = useMemo(
-    () => bun.price + body.reduce((sum, ingredient) => sum + ingredient.price, 0),
-    [bun, body]
+  const listRef = useRef<HTMLUListElement>(null);
+  const [, listDropRef] = useDrop<TIngredient, void, unknown>(
+    () => ({
+      accept: 'ingredient',
+      drop: (item, monitor): void => {
+        if (monitor.didDrop()) return;
+        dispatch(addIngredient(item));
+      },
+    }),
+    [dispatch]
   );
+  listDropRef(listRef);
 
-  const handleClose = (): void => {
-    console.log('удаление');
+  const handleSubmit = async (): Promise<void> => {
+    if (!bun) return;
+    try {
+      const postOrderResponse = await postOrder({
+        ingredients: [
+          bun._id,
+          ...ingredients.map((ingredient) => ingredient._id),
+          bun._id,
+        ],
+      }).unwrap();
+
+      dispatch(setOrder(postOrderResponse.order));
+      handleOpenModal();
+    } catch (error) {
+      dispatch(setOrder(null));
+      setOrderError(
+        new Error(
+          `Ошибка оформления заказа: ${getErrorMessage(error as FetchBaseQueryError | SerializedError)}`
+        )
+      );
+    }
   };
 
-  const handleSubmit = (): void => {
-    handleOpenModal();
-  };
+  if (orderError) {
+    //Триггерим ErrorBoundary
+    throw orderError;
+  }
 
   return (
     <section className={styles.burger_constructor}>
-      {
+      {!bun && (
         <div className="pl-8">
-          <ConstructorElement
+          <BurgerPlaceholder
             type="top"
-            isLocked={true}
-            text={`${bun.name} (верх)`}
-            price={bun.price}
-            thumbnail={bun.image_mobile}
+            caption="Выберите булку"
+            ingredientType="bun"
+            onDrop={(item) => dispatch(setBun(item))}
           />
         </div>
-      }
+      )}
+      {bun && (
+        <div className="pl-8">
+          <ConstructorBun bun={bun} type="top" />
+        </div>
+      )}
 
-      <ul className={clsx(styles.list, 'custom-scroll')}>
-        {body.map((ingredient) => (
-          <li key={ingredient._id} className={styles.item}>
-            <DragIcon type="primary" />
-            <ConstructorElement
-              text={ingredient.name}
-              price={ingredient.price}
-              thumbnail={ingredient.image_mobile}
-              handleClose={handleClose}
-            />
-          </li>
+      <ul ref={listRef} className={clsx(styles.list, 'custom-scroll')}>
+        {ingredients.map((ingredient, index) => (
+          <ConstructorIngredient
+            key={ingredient.key}
+            ingredient={ingredient}
+            index={index}
+          />
         ))}
+
+        {!ingredients.length && (
+          <div className="pl-8">
+            <BurgerPlaceholder
+              caption="Выберите начинку"
+              ingredientType="ingredient"
+              onDrop={(item) => dispatch(addIngredient(item))}
+            />
+          </div>
+        )}
       </ul>
 
-      {
+      {!bun && (
         <div className="pl-8">
-          <ConstructorElement
+          <BurgerPlaceholder
             type="bottom"
-            isLocked={true}
-            text={`${bun.name} (низ)`}
-            price={bun.price}
-            thumbnail={bun.image_mobile}
+            caption="Выберите булку"
+            ingredientType="bun"
+            onDrop={(item) => dispatch(setBun(item))}
           />
         </div>
-      }
+      )}
+
+      {bun && (
+        <div className="pl-8">
+          <ConstructorBun bun={bun} type="bottom" />
+        </div>
+      )}
 
       <div className={clsx(styles.total, 'mt-10', 'pr-4')}>
         <p className={clsx(styles.price, 'text', 'text_type_digits-medium')}>
@@ -117,17 +142,18 @@ export const BurgerConstructor = ({
           <CurrencyIcon type="primary" />
         </p>
         <Button
-          onClick={handleSubmit}
+          onClick={() => void handleSubmit()}
           size="large"
           type="primary"
           htmlType="submit"
           extraClass="ml-10"
+          disabled={!bun}
         >
-          Оформить заказ
+          {isLoading ? 'Отправляем...' : 'Оформить заказ'}
         </Button>
         {isOrderDetailsVisible && (
           <Modal onClose={handleCloseModal}>
-            <OrderDetails orderNumber={orderNumber} />
+            <OrderDetails />
           </Modal>
         )}
       </div>

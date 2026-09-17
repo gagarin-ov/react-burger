@@ -1,26 +1,27 @@
+import { useGetIngredientsQuery } from '@/api/burger-api';
+import { getIngredientCounts } from '@/services/burger-constructor/slice';
+import {
+  getSelectedIngredient,
+  setSelectedIngredient,
+} from '@/services/ingredient-details/slice';
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BurgerIngredient } from '@components/burger-ingredient/burger-ingredient';
-
-import type { TIngredient } from '@utils/types';
+import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
+import { Modal } from '@components/modal/modal';
 
 import styles from './burger-ingredients.module.css';
 
-type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
-};
-
-export const BurgerIngredients = ({
-  ingredients,
-}: TBurgerIngredientsProps): React.JSX.Element => {
+export const BurgerIngredients = (): React.JSX.Element => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bunRef = useRef<HTMLHeadingElement>(null);
   const sauceRef = useRef<HTMLHeadingElement>(null);
   const mainRef = useRef<HTMLHeadingElement>(null);
 
-  const GROUPS = useMemo(
+  const groups = useMemo(
     () => [
       { type: 'bun', title: 'Булки', groupRef: bunRef },
       { type: 'main', title: 'Начинки', groupRef: mainRef },
@@ -29,27 +30,26 @@ export const BurgerIngredients = ({
     []
   );
 
-  const counts = useMemo<Record<string, number>>(
-    () => ({
-      //сделано без проверки количества, по сути моковые данные для счетчика
-      [ingredients[0]._id]: 1,
-      [ingredients[1]._id]: 1,
-    }),
-    [ingredients]
+  const { data: ingredients = [] } = useGetIngredientsQuery();
+
+  const counts = useSelector(getIngredientCounts);
+
+  const dispatch = useDispatch();
+  const selectedIngredient = useSelector(getSelectedIngredient);
+  const handleCloseDetails = useCallback(
+    () => dispatch(setSelectedIngredient(null)),
+    [dispatch]
   );
 
   const [activeTab, setActiveTab] = useState('bun');
 
   const handleScroll = useCallback(() => {
     if (!scrollRef.current) return;
-
     const containerTop = scrollRef.current.getBoundingClientRect().top;
-
-    // Ищем заголовок, ближайший к верхней границе контейнера
     let closest = 'bun';
     let minDistance = Infinity;
 
-    for (const { type, groupRef } of GROUPS) {
+    for (const { type, groupRef } of groups) {
       if (!groupRef.current) continue;
       const distance = Math.abs(
         groupRef.current.getBoundingClientRect().top - containerTop
@@ -101,7 +101,7 @@ export const BurgerIngredients = ({
         className={clsx(styles.list, 'custom-scroll', 'mt-10')}
         onScroll={() => handleScroll()}
       >
-        {GROUPS.map(({ type, title, groupRef }) => (
+        {groups.map(({ type, title, groupRef }) => (
           <div key={type}>
             <h2 ref={groupRef} className="text text_type_main-medium">
               {title}
@@ -120,6 +120,11 @@ export const BurgerIngredients = ({
           </div>
         ))}
       </div>
+      {selectedIngredient && (
+        <Modal header="Детали ингредиента" onClose={handleCloseDetails}>
+          <IngredientDetails ingredient={selectedIngredient} />
+        </Modal>
+      )}
     </section>
   );
 };

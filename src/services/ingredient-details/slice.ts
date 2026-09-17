@@ -3,16 +3,16 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { TIngredient } from '@/utils/types';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-export type TIngredientsState = {
+export type TIngredientDetailsState = {
   selectedIngredient: TIngredient | null;
 };
 
-const initialState: TIngredientsState = {
+const initialState: TIngredientDetailsState = {
   selectedIngredient: null,
 };
 
-export const ingredientsSlice = createSlice({
-  name: 'ingredients',
+export const ingredientDetailsSlice = createSlice({
+  name: 'ingredientDetails',
   initialState,
   reducers: {
     setSelectedIngredient: (state, action: PayloadAction<TIngredient | null>) => {
@@ -24,5 +24,5 @@ export const ingredientsSlice = createSlice({
   },
 });
 
-export const { setSelectedIngredient } = ingredientsSlice.actions;
-export const { getSelectedIngredient } = ingredientsSlice.selectors;
+export const { setSelectedIngredient } = ingredientDetailsSlice.actions;
+export const { getSelectedIngredient } = ingredientDetailsSlice.selectors;
