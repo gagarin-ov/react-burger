@@ -36,7 +36,7 @@ export const burgerApi = createApi({
     postOrder: builder.mutation<TPostOrdersResponse, TPostOrdersPayload>({
       query: (body: TPostOrdersPayload) => ({
         method: 'POST',
-        url: '/ord123ers',
+        url: '/orders',
         body,
       }),
       transformResponse: (response: TPostOrdersResponse) => {

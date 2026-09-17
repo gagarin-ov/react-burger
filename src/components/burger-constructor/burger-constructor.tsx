@@ -10,9 +10,11 @@ import { setOrder } from '@/services/order/slice';
 import { getErrorMessage } from '@/utils/request';
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { useModal } from '@hooks/use-modal';
 
 import { BurgerPlaceholder } from '../burger-placeholder/burger-placeholder';
 import { ConstructorBun } from '../constructor-bun/constructor-bun';
@@ -33,10 +35,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const dispatch = useDispatch();
   const bun = useSelector(getBun);
   const ingredients = useSelector(getIngredients);
-
-  const [isOrderDetailsVisible, setIsOrderDetailsVisible] = useState(false);
-  const handleCloseModal = useCallback(() => setIsOrderDetailsVisible(false), []);
-  const handleOpenModal = useCallback(() => setIsOrderDetailsVisible(true), []);
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   const total = useSelector(getTotalPrice);
 
@@ -65,7 +64,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
       }).unwrap();
 
       dispatch(setOrder(postOrderResponse.order));
-      handleOpenModal();
+      openModal();
     } catch (error) {
       dispatch(setOrder(null));
       setOrderError(
@@ -151,8 +150,8 @@ export const BurgerConstructor = (): React.JSX.Element => {
         >
           {isLoading ? 'Отправляем...' : 'Оформить заказ'}
         </Button>
-        {isOrderDetailsVisible && (
-          <Modal onClose={handleCloseModal}>
+        {isModalOpen && (
+          <Modal onClose={closeModal}>
             <OrderDetails />
           </Modal>
         )}
