@@ -1,0 +1,21 @@
+.wrapper {
+  box-sizing: border-box;
+  max-width: 536px;
+  border: 1px solid transparent;
+}
+
+.posTop {
+  border-radius: var(--top-constructor-item-border-radius);
+}
+
+.posBottom {
+  border-radius: var(--bottom-constructor-item-border-radius);
+}
+
+.isAcceptable {
+  border-color: #991da4;
+}
+
+.isOver {
+  opacity: 0.6;
+}

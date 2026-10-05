@@ -21,8 +21,8 @@ export const Modal = ({
   onClose,
 }: TModalProps): React.JSX.Element | null => {
   useEffect(() => {
-    const handleEscape = (evt: KeyboardEvent): void => {
-      if (evt.key === 'Escape') onClose();
+    const handleEscape = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', handleEscape);
     return (): void => document.removeEventListener('keydown', handleEscape);

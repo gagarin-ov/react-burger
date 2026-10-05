@@ -1,34 +1,67 @@
+import { useGetIngredientsQuery } from '@/api/burger-api';
+import { getIngredientCounts } from '@/services/burger-constructor/slice';
+import {
+  getSelectedIngredient,
+  setSelectedIngredient,
+} from '@/services/ingredient-details/slice';
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BurgerIngredient } from '@components/burger-ingredient/burger-ingredient';
-
-import type { TIngredient } from '@utils/types';
+import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
+import { Modal } from '@components/modal/modal';
 
 import styles from './burger-ingredients.module.css';
 
-type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
-};
+export const BurgerIngredients = (): React.JSX.Element => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const bunRef = useRef<HTMLHeadingElement>(null);
+  const sauceRef = useRef<HTMLHeadingElement>(null);
+  const mainRef = useRef<HTMLHeadingElement>(null);
 
-const GROUPS = [
-  { type: 'bun', title: 'Булки' },
-  { type: 'sauce', title: 'Соусы' },
-  { type: 'main', title: 'Начинки' },
-];
-
-export const BurgerIngredients = ({
-  ingredients,
-}: TBurgerIngredientsProps): React.JSX.Element => {
-  const counts = useMemo<Record<string, number>>(
-    () => ({
-      //сделано без проверки количества, по сути моковые данные для счетчика
-      [ingredients[0]._id]: 1,
-      [ingredients[1]._id]: 1,
-    }),
-    [ingredients]
+  const groups = useMemo(
+    () => [
+      { type: 'bun', title: 'Булки', groupRef: bunRef },
+      { type: 'main', title: 'Начинки', groupRef: mainRef },
+      { type: 'sauce', title: 'Соусы', groupRef: sauceRef },
+    ],
+    []
   );
+
+  const { data: ingredients = [] } = useGetIngredientsQuery();
+
+  const counts = useSelector(getIngredientCounts);
+
+  const dispatch = useDispatch();
+  const selectedIngredient = useSelector(getSelectedIngredient);
+  const handleCloseDetails = useCallback(
+    () => dispatch(setSelectedIngredient(null)),
+    [dispatch]
+  );
+
+  const [activeTab, setActiveTab] = useState('bun');
+
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current) return;
+    const containerTop = scrollRef.current.getBoundingClientRect().top;
+    let closest = 'bun';
+    let minDistance = Infinity;
+
+    for (const { type, groupRef } of groups) {
+      if (!groupRef.current) continue;
+      const distance = Math.abs(
+        groupRef.current.getBoundingClientRect().top - containerTop
+      );
+      if (distance < minDistance) {
+        minDistance = distance;
+        closest = type;
+      }
+    }
+
+    setActiveTab(closest);
+  }, []);
 
   return (
     <section className={styles.burger_ingredients}>
@@ -36,7 +69,7 @@ export const BurgerIngredients = ({
         <ul className={styles.menu}>
           <Tab
             value="bun"
-            active={true}
+            active={activeTab === 'bun'}
             onClick={() => {
               /* TODO */
             }}
@@ -45,7 +78,7 @@ export const BurgerIngredients = ({
           </Tab>
           <Tab
             value="main"
-            active={false}
+            active={activeTab === 'main'}
             onClick={() => {
               /* TODO */
             }}
@@ -54,7 +87,7 @@ export const BurgerIngredients = ({
           </Tab>
           <Tab
             value="sauce"
-            active={false}
+            active={activeTab === 'sauce'}
             onClick={() => {
               /* TODO */
             }}
@@ -63,10 +96,16 @@ export const BurgerIngredients = ({
           </Tab>
         </ul>
       </nav>
-      <div className={clsx(styles.list, 'custom-scroll', 'mt-10')}>
-        {GROUPS.map(({ type, title }) => (
+      <div
+        ref={scrollRef}
+        className={clsx(styles.list, 'custom-scroll', 'mt-10')}
+        onScroll={() => handleScroll()}
+      >
+        {groups.map(({ type, title, groupRef }) => (
           <div key={type}>
-            <h2 className="text text_type_main-medium">{title}</h2>
+            <h2 ref={groupRef} className="text text_type_main-medium">
+              {title}
+            </h2>
             <ul className={clsx(styles.cards, 'mt-6', 'pl-4')}>
               {ingredients
                 .filter((ingredient) => ingredient.type === type)
@@ -81,6 +120,11 @@ export const BurgerIngredients = ({
           </div>
         ))}
       </div>
+      {selectedIngredient && (
+        <Modal header="Детали ингредиента" onClose={handleCloseDetails}>
+          <IngredientDetails ingredient={selectedIngredient} />
+        </Modal>
+      )}
     </section>
   );
 };
