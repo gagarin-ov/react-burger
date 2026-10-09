@@ -1,20 +1,22 @@
-import { usePostOrderMutation } from '@/api/burger-api';
+import { usePostOrderMutation } from '@api/burger-api';
+import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
+import { clsx } from 'clsx';
+import { useRef, useState } from 'react';
+import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { useModal } from '@hooks/use-modal';
 import {
   addIngredient,
   getBun,
   getIngredients,
   getTotalPrice,
   setBun,
-} from '@/services/burger-constructor/slice';
-import { setOrder } from '@/services/order/slice';
-import { getErrorMessage } from '@/utils/request';
-import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
-import { clsx } from 'clsx';
-import { useRef, useState } from 'react';
-import { useDrop } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { useModal } from '@hooks/use-modal';
+} from '@services/burger-constructor/slice';
+import { setOrder } from '@services/order/slice';
+import { selectUser } from '@services/user/slice';
+import { getErrorMessage } from '@utils/request';
 
 import { BurgerPlaceholder } from '../burger-placeholder/burger-placeholder';
 import { ConstructorBun } from '../constructor-bun/constructor-bun';
@@ -33,6 +35,9 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const [orderError, setOrderError] = useState<Error | null>(null);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useSelector(selectUser);
   const bun = useSelector(getBun);
   const ingredients = useSelector(getIngredients);
   const { isModalOpen, openModal, closeModal } = useModal();
@@ -54,6 +59,10 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
   const handleSubmit = async (): Promise<void> => {
     if (!bun) return;
+    if (!user) {
+      void navigate('/login', { state: { from: location } });
+      return;
+    }
     try {
       const postOrderResponse = await postOrder({
         ingredients: [
