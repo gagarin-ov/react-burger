@@ -1,0 +1,30 @@
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 120px;
+}
+
+.sidebar {
+  width: 320px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  text-decoration: none;
+}
+
+.active {
+  color: var(--text-primary-color);
+}
+
+.logout {
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
