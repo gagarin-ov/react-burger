@@ -1,16 +1,32 @@
+import { useGetIngredientsQuery } from '@api/burger-api';
+import { Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
-import type { TIngredient } from '@utils/types';
+import { selectIngredientById } from '@services/ingredient-details/selectors';
+
+import type { TState } from '@services/store';
 
 import styles from './ingredient-details.module.css';
 
-type TIngredientDetailsProps = {
-  ingredient: TIngredient;
-};
+export const IngredientDetails = (): React.JSX.Element => {
+  const { id } = useParams<{ id: string }>();
+  const { isLoading, isError } = useGetIngredientsQuery();
+  const ingredient = useSelector((state: TState) => selectIngredientById(state, id));
 
-export const IngredientDetails = ({
-  ingredient,
-}: TIngredientDetailsProps): React.JSX.Element => {
+  if (isLoading) return <Preloader />;
+
+  if (isError) {
+    return (
+      <p className="text text_type_main-default">Не удалось загрузить ингредиенты</p>
+    );
+  }
+
+  if (!ingredient) {
+    return <p className="text text_type_main-default">Ингредиент не найден</p>;
+  }
+
   return (
     <div className={styles.details}>
       <img className={styles.image} src={ingredient.image_large} alt={ingredient.name} />

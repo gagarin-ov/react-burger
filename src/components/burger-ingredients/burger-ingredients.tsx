@@ -1,17 +1,11 @@
-import { useGetIngredientsQuery } from '@/api/burger-api';
-import { getIngredientCounts } from '@/services/burger-constructor/slice';
-import {
-  getSelectedIngredient,
-  setSelectedIngredient,
-} from '@/services/ingredient-details/slice';
+import { useGetIngredientsQuery } from '@api/burger-api';
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { BurgerIngredient } from '@components/burger-ingredient/burger-ingredient';
-import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
-import { Modal } from '@components/modal/modal';
+import { getIngredientCounts } from '@services/burger-constructor/slice';
 
 import styles from './burger-ingredients.module.css';
 
@@ -33,13 +27,6 @@ export const BurgerIngredients = (): React.JSX.Element => {
   const { data: ingredients = [] } = useGetIngredientsQuery();
 
   const counts = useSelector(getIngredientCounts);
-
-  const dispatch = useDispatch();
-  const selectedIngredient = useSelector(getSelectedIngredient);
-  const handleCloseDetails = useCallback(
-    () => dispatch(setSelectedIngredient(null)),
-    [dispatch]
-  );
 
   const [activeTab, setActiveTab] = useState('bun');
 
@@ -120,11 +107,6 @@ export const BurgerIngredients = (): React.JSX.Element => {
           </div>
         ))}
       </div>
-      {selectedIngredient && (
-        <Modal header="Детали ингредиента" onClose={handleCloseDetails}>
-          <IngredientDetails ingredient={selectedIngredient} />
-        </Modal>
-      )}
     </section>
   );
 };

@@ -1,10 +1,11 @@
-import { useDndContext } from '@/contexts/dnd-context';
-import { setBun } from '@/services/burger-constructor/slice';
 import { ConstructorElement } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useRef } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch } from 'react-redux';
+
+import { useDndContext } from '@contexts/dnd-context';
+import { setBun } from '@services/burger-constructor/slice';
 
 import type { TIngredient } from '@utils/types';
 

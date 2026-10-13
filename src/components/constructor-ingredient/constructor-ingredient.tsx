@@ -1,10 +1,4 @@
 import {
-  addIngredient,
-  deleteIngredient,
-  moveIngredient,
-  type TConstructorIngredient,
-} from '@/services/burger-constructor/slice';
-import {
   ConstructorElement,
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
@@ -12,6 +6,13 @@ import { clsx } from 'clsx';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useDispatch } from 'react-redux';
+
+import {
+  addIngredient,
+  deleteIngredient,
+  moveIngredient,
+  type TConstructorIngredient,
+} from '@services/burger-constructor/slice';
 
 import type { TIngredient } from '@utils/types';
 

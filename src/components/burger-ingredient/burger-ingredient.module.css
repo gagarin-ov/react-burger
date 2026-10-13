@@ -6,6 +6,15 @@
   width: 272px;
 }
 
+.link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
 .image {
   width: 240px;
   height: 120px;

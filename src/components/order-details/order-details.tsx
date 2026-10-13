@@ -1,7 +1,8 @@
-import { getOrder } from '@/services/order/slice';
 import { CheckMarkIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useSelector } from 'react-redux';
+
+import { getOrder } from '@services/order/slice';
 
 import styles from './order-details.module.css';
 

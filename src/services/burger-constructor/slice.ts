@@ -1,7 +1,7 @@
 import { createSelector, createSlice, nanoid } from '@reduxjs/toolkit';
 
-import type { TIngredient } from '@/utils/types';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import type { TIngredient } from '@utils/types';
 
 export type TConstructorIngredient = TIngredient & { key: string };
 

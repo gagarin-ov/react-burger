@@ -1,8 +1,8 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { API_URL } from '@utils/const';
+import { baseQueryWithRefresh } from '@utils/api';
 
-import type { TOrder } from '@/services/order/slice';
+import type { TOrder } from '@services/order/slice';
 import type { TIngredient } from '@utils/types';
 
 export type TIngredientsResponse = {
@@ -22,12 +22,10 @@ export type TPostOrdersResponse = {
 
 export const burgerApi = createApi({
   reducerPath: 'burgerApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL,
-  }),
+  baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getIngredients: builder.query<TIngredient[], void>({
-      query: () => ({ url: '/ingredients' }),
+      query: () => ({ url: 'ingredients' }),
       transformResponse: (response: TIngredientsResponse) => {
         if (!response.success) throw new Error('Ошибка запроса на сервер');
         return response.data;
@@ -36,7 +34,7 @@ export const burgerApi = createApi({
     postOrder: builder.mutation<TPostOrdersResponse, TPostOrdersPayload>({
       query: (body: TPostOrdersPayload) => ({
         method: 'POST',
-        url: '/orders',
+        url: 'orders',
         body,
       }),
       transformResponse: (response: TPostOrdersResponse) => {

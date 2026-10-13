@@ -1,9 +1,10 @@
-import { useDndContext } from '@/contexts/dnd-context';
 import { clsx } from 'clsx';
 import { useRef } from 'react';
 import { useDrop } from 'react-dnd';
 
-import type { TIngredient } from '@/utils/types';
+import { useDndContext } from '@contexts/dnd-context';
+
+import type { TIngredient } from '@utils/types';
 
 import styles from './burger-placeholder.module.css';
 export type TIngredientType = 'bun' | 'ingredient';

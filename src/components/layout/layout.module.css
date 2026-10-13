@@ -1,0 +1,8 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--text-primary-color);
+  background-color: var(--background-alt);
+}
