@@ -1,19 +1,17 @@
 import { useGetIngredientsQuery } from '@api/burger-api';
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { selectIngredientById } from '@services/ingredient-details/selectors';
-
-import type { TState } from '@services/store';
+import { useAppSelector } from '@services/store';
 
 import styles from './ingredient-details.module.css';
 
 export const IngredientDetails = (): React.JSX.Element => {
   const { id } = useParams<{ id: string }>();
   const { isLoading, isError } = useGetIngredientsQuery();
-  const ingredient = useSelector((state: TState) => selectIngredientById(state, id));
+  const ingredient = useAppSelector((state) => selectIngredientById(state, id));
 
   if (isLoading) return <Preloader />;
 

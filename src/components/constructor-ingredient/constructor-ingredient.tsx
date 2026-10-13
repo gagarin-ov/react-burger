@@ -5,7 +5,6 @@ import {
 import { clsx } from 'clsx';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 
 import {
   addIngredient,
@@ -13,6 +12,7 @@ import {
   moveIngredient,
   type TConstructorIngredient,
 } from '@services/burger-constructor/slice';
+import { useAppDispatch } from '@services/store';
 
 import type { TIngredient } from '@utils/types';
 
@@ -34,7 +34,7 @@ export const ConstructorIngredient = ({
   ingredient,
   index,
 }: TConstructorIngredientProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const ref = useRef<HTMLLIElement>(null);
 
   const [{ isDragging }, dragRef] = useDrag<TSortItem, void, { isDragging: boolean }>(

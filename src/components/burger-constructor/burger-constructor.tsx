@@ -3,7 +3,6 @@ import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-component
 import { clsx } from 'clsx';
 import { useRef, useState } from 'react';
 import { useDrop } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useModal } from '@hooks/use-modal';
@@ -15,6 +14,7 @@ import {
   setBun,
 } from '@services/burger-constructor/slice';
 import { setOrder } from '@services/order/slice';
+import { useAppDispatch, useAppSelector } from '@services/store';
 import { selectUser } from '@services/user/slice';
 import { getErrorMessage } from '@utils/request';
 
@@ -34,15 +34,15 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const [postOrder, { isLoading }] = usePostOrderMutation();
   const [orderError, setOrderError] = useState<Error | null>(null);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const user = useSelector(selectUser);
-  const bun = useSelector(getBun);
-  const ingredients = useSelector(getIngredients);
+  const user = useAppSelector(selectUser);
+  const bun = useAppSelector(getBun);
+  const ingredients = useAppSelector(getIngredients);
   const { isModalOpen, openModal, closeModal } = useModal();
 
-  const total = useSelector(getTotalPrice);
+  const total = useAppSelector(getTotalPrice);
 
   const listRef = useRef<HTMLUListElement>(null);
   const [, listDropRef] = useDrop<TIngredient, void, unknown>(

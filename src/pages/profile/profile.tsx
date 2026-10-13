@@ -1,8 +1,8 @@
 import { authApi, useLogoutMutation } from '@api/auth-api';
 import { clsx } from 'clsx';
-import { useDispatch } from 'react-redux';
 import { NavLink, Outlet, useMatch, useNavigate } from 'react-router-dom';
 
+import { useAppDispatch } from '@services/store';
 import { setUser } from '@services/user/slice';
 import { clearTokens } from '@utils/token';
 
@@ -17,7 +17,7 @@ const getLinkClass = ({ isActive }: { isActive: boolean }): string =>
   );
 
 export const ProfilePage = (): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [logout, { isLoading }] = useLogoutMutation();
   const isOrdersRoute = Boolean(useMatch('/profile/orders/*'));

@@ -7,11 +7,9 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { App } from '@components/app/app';
 
-import { configureStore } from './services/store';
+import { store } from './services/store';
 
 import './index.css';
-
-const store = configureStore();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
