@@ -2,10 +2,10 @@ import { ConstructorElement } from '@krgaa/react-developer-burger-ui-components'
 import { clsx } from 'clsx';
 import { useRef } from 'react';
 import { useDrop } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 
 import { useDndContext } from '@contexts/dnd-context';
 import { setBun } from '@services/burger-constructor/slice';
+import { useAppDispatch } from '@services/store';
 
 import type { TIngredient } from '@utils/types';
 
@@ -21,7 +21,7 @@ export const ConstructorBun = ({
   bun,
   type,
 }: TConstructorBunProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { draggingType } = useDndContext();
 
   const ref = useRef<HTMLDivElement>(null);

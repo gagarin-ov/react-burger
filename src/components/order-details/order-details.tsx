@@ -1,13 +1,13 @@
 import { CheckMarkIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useSelector } from 'react-redux';
 
 import { getOrder } from '@services/order/slice';
+import { useAppSelector } from '@services/store';
 
 import styles from './order-details.module.css';
 
 export const OrderDetails = (): React.JSX.Element => {
-  const order = useSelector(getOrder);
+  const order = useAppSelector(getOrder);
   return (
     <div className={clsx(styles.order, 'pt-30', 'pb-15')}>
       <p className={clsx(styles.number, 'text', 'text_type_digits-large')}>

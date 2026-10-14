@@ -2,10 +2,10 @@ import { useGetIngredientsQuery } from '@api/burger-api';
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { BurgerIngredient } from '@components/burger-ingredient/burger-ingredient';
 import { getIngredientCounts } from '@services/burger-constructor/slice';
+import { useAppSelector } from '@services/store';
 
 import styles from './burger-ingredients.module.css';
 
@@ -26,7 +26,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
 
   const { data: ingredients = [] } = useGetIngredientsQuery();
 
-  const counts = useSelector(getIngredientCounts);
+  const counts = useAppSelector(getIngredientCounts);
 
   const [activeTab, setActiveTab] = useState('bun');
 

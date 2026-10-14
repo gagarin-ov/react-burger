@@ -6,9 +6,9 @@ import {
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { useFormWithValidation } from '@hooks/use-form-with-validation';
+import { useAppSelector } from '@services/store';
 import { selectUser } from '@services/user/slice';
 
 import type { TUpdateUserPayload, TUser } from '@api/auth-api';
@@ -28,7 +28,7 @@ const getInitialValues = (user: TUser | null): TProfileForm => ({
 });
 
 export const ProfileForm = (): React.JSX.Element => {
-  const user = useSelector(selectUser);
+  const user = useAppSelector(selectUser);
   const [updateUser, { isLoading, error }] = useUpdateUserMutation();
   const initialValues = useMemo(() => getInitialValues(user), [user]);
   const { values, handleChange, validity, resetForm } =

@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import { BurgerIngredientsModal } from '@components/burger-ingredient-modal/burger-ingredient-modal';
@@ -16,9 +15,9 @@ import { ProfileOrderPage } from '@pages/profile-order/profile-order';
 import { ProfilePage } from '@pages/profile/profile';
 import { RegisterPage } from '@pages/register/register';
 import { ResetPasswordPage } from '@pages/reset-password/reset-password';
+import { useAppDispatch } from '@services/store';
 import { checkUserAuth } from '@services/user/actions';
 
-import type { TAppDispatch } from '@services/store';
 import type { Location } from 'react-router-dom';
 
 type TBackgroundLocationState = {
@@ -26,7 +25,7 @@ type TBackgroundLocationState = {
 };
 
 export const App = (): React.JSX.Element => {
-  const dispatch = useDispatch<TAppDispatch>();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const { background } = (location.state ?? {}) as TBackgroundLocationState;
 
