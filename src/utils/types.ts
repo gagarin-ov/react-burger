@@ -12,3 +12,21 @@ export type TIngredient = {
   image_mobile: string;
   __v: number;
 };
+
+export type TFeedOrderStatus = 'created' | 'pending' | 'done';
+
+export type TFeedOrder = {
+  _id: string;
+  ingredients: string[];
+  status: TFeedOrderStatus;
+  name: string;
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TFeed = {
+  orders: TFeedOrder[];
+  total: number;
+  totalToday: number;
+};

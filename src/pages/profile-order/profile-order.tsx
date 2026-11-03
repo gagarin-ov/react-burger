@@ -1,19 +1,32 @@
-import { Link } from 'react-router-dom';
+import { useGetMessagesQuery } from '@api/socket-api';
+import { Preloader } from '@krgaa/react-developer-burger-ui-components';
+import { useMemo } from 'react';
+
+import { OrdersList } from '@components/orders-list/orders-list';
 
 import styles from './profile-order.module.css';
 
 export const ProfileOrderPage = (): React.JSX.Element => {
+  const { data: feed } = useGetMessagesQuery();
+
+  // Сервер присылает заказы от старых к новым, в истории показываем свежие сверху
+  const orders = useMemo(() => [...(feed?.orders ?? [])].reverse(), [feed]);
+
+  if (!feed) {
+    return <Preloader />;
+  }
+
+  if (orders.length === 0) {
+    return <p className="text text_type_main-default">Заказов пока нет</p>;
+  }
+
   return (
-    <section className={styles.page}>
-      <h1 className="text text_type_main-medium mb-6">
-        Страница будет разработана позже
-      </h1>
-      <p className="text text_type_main-default text_color_inactive">
-        <Link to="/" className={styles.link}>
-          На главную
-        </Link>
-      </p>
-    </section>
+    <OrdersList
+      orders={orders}
+      basePath="/profile/orders"
+      showStatus
+      className={styles.orders}
+    />
   );
 };
 

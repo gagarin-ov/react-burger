@@ -2,15 +2,18 @@ import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import { BurgerIngredientsModal } from '@components/burger-ingredient-modal/burger-ingredient-modal';
+import { FeedItemModal } from '@components/feed-item-modal/feed-item-modal';
 import { Home } from '@components/home/home';
 import { Layout } from '@components/layout/layout';
 import { ProfileForm } from '@components/profile-form/profile-form';
 import { ProtectedRoute, OnlyUnAuth } from '@components/protected-route/protected-route';
+import { FeedOrderPage } from '@pages/feed-order/feed-order';
 import { FeedPage } from '@pages/feed/feed';
 import { ForgotPasswordPage } from '@pages/forgot-password/forgot-password';
 import { IngredientPage } from '@pages/ingredient/ingredient';
 import { LoginPage } from '@pages/login/login';
 import { NotFoundPage } from '@pages/not-found/not-found';
+import { ProfileOrderDetailsPage } from '@pages/profile-order-details/profile-order-details';
 import { ProfileOrderPage } from '@pages/profile-order/profile-order';
 import { ProfilePage } from '@pages/profile/profile';
 import { RegisterPage } from '@pages/register/register';
@@ -40,6 +43,7 @@ export const App = (): React.JSX.Element => {
           <Route index element={<Home />} />
           <Route path="ingredients/:id" element={<IngredientPage />} />
           <Route path="feed" element={<FeedPage />} />
+          <Route path="feed/:id" element={<FeedOrderPage />} />
           <Route path="login" element={<OnlyUnAuth component={<LoginPage />} />} />
           <Route path="register" element={<OnlyUnAuth component={<RegisterPage />} />} />
           <Route
@@ -54,6 +58,10 @@ export const App = (): React.JSX.Element => {
             <Route index element={<ProfileForm />} />
             <Route path="orders" element={<ProfileOrderPage />} />
           </Route>
+          <Route
+            path="profile/orders/:id"
+            element={<ProtectedRoute component={<ProfileOrderDetailsPage />} />}
+          />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
@@ -61,6 +69,11 @@ export const App = (): React.JSX.Element => {
       {background && (
         <Routes>
           <Route path="/ingredients/:id" element={<BurgerIngredientsModal />} />
+          <Route path="/feed/:id" element={<FeedItemModal />} />
+          <Route
+            path="/profile/orders/:id"
+            element={<ProtectedRoute component={<FeedItemModal />} />}
+          />
         </Routes>
       )}
     </>

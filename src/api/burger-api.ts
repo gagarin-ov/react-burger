@@ -3,7 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithRefresh } from '@utils/api';
 
 import type { TOrder } from '@services/order/slice';
-import type { TIngredient } from '@utils/types';
+import type { TFeedOrder, TIngredient } from '@utils/types';
 
 export type TIngredientsResponse = {
   success: boolean;
@@ -17,6 +17,12 @@ export type TPostOrdersPayload = {
 export type TPostOrdersResponse = {
   name: string;
   order: TOrder;
+  success: boolean;
+};
+
+export type TGetOrderResponse = {
+  name: string;
+  orders: TFeedOrder[];
   success: boolean;
 };
 
@@ -42,7 +48,17 @@ export const burgerApi = createApi({
         return response;
       },
     }),
+    getOrder: builder.query<TFeedOrder | null, string>({
+      query: (orderNumber: string) => ({
+        url: `orders/${orderNumber}`,
+      }),
+      transformResponse: (response: TGetOrderResponse) => {
+        if (!response.success) throw new Error('Ошибка получения заказа');
+        return response.orders.at(0) ?? null;
+      },
+    }),
   }),
 });
 
-export const { useGetIngredientsQuery, usePostOrderMutation } = burgerApi;
+export const { useGetIngredientsQuery, useGetOrderQuery, usePostOrderMutation } =
+  burgerApi;

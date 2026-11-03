@@ -1,12 +1,4 @@
-.page {
-  width: 480px;
-}
-
-.link {
-  color: #4c4cff;
-  text-decoration: none;
-}
-
-.link:hover {
-  text-decoration: underline;
+.orders {
+  align-self: stretch;
+  width: 860px;
 }

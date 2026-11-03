@@ -21,7 +21,7 @@ export type TBaseQueryError = {
   data: unknown;
 };
 
-async function refreshToken(): Promise<TRefreshResponse> {
+export async function refreshToken(): Promise<TRefreshResponse> {
   try {
     const refreshData = await request<TRefreshResponse>('auth/token', {
       body: JSON.stringify({ token: getRefreshToken() }),
