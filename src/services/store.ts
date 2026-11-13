@@ -1,3 +1,4 @@
+import { socketApi } from '@/api/socket-api';
 import { authApi } from '@api/auth-api';
 import { burgerApi } from '@api/burger-api';
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
@@ -10,6 +11,7 @@ import { userSlice } from './user/slice';
 const rootReducer = combineSlices(
   burgerApi,
   authApi,
+  socketApi,
   burgerConstructorSlice,
   userSlice,
   orderSlice
@@ -24,7 +26,8 @@ export const store = configureStore({
     // Подключаем через middleware
     return getDefaultMiddleware()
       .concat(burgerApi.middleware)
-      .concat(authApi.middleware);
+      .concat(authApi.middleware)
+      .concat(socketApi.middleware);
   },
 });
 

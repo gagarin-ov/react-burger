@@ -1,0 +1,34 @@
+.icon {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--background-alt), var(--background-alt)) padding-box,
+    linear-gradient(63deg, #801ab2, #4c4cff) border-box;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+
+.image {
+  width: 112px;
+  height: 56px;
+  object-fit: cover;
+}
+
+.imageDimmed {
+  opacity: 0.6;
+}
+
+.more {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,52 @@
+.item {
+  display: flex;
+  flex-direction: column;
+  width: 640px;
+  min-height: 0;
+}
+
+.name {
+  margin: 0;
+}
+
+.status,
+.title {
+  margin-bottom: 0;
+}
+
+.ingredients {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 312px;
+  margin-bottom: 0;
+  padding-left: 0;
+  overflow-y: auto;
+  list-style-type: none;
+}
+
+.ingredient {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ingredientName {
+  flex: 1 1 auto;
+  margin: 0;
+}
+
+.price {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -1,16 +1,17 @@
-.page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 180px;
+.title {
+  box-sizing: border-box;
+  width: 1240px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
-.link {
-  color: #4c4cff;
-  text-decoration: none;
-}
-
-.link:hover {
-  text-decoration: underline;
+.main {
+  display: grid;
+  grid-template-columns: 600px 580px;
+  gap: 60px;
+  box-sizing: border-box;
+  width: 1240px;
+  min-height: 0;
+  margin: 0 auto;
+  padding-bottom: 40px;
 }
