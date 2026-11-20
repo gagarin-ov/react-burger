@@ -40,8 +40,11 @@ export const Modal = ({
   return createPortal(
     <>
       <ModalOverlay onClose={handleClose} />
-      <div className={styles.modal}>
-        <div className={clsx(styles.header, 'pt-10', 'pl-10', 'pr-10')}>
+      <div data-testid="modal" className={styles.modal}>
+        <div
+          data-testid="modal-header"
+          className={clsx(styles.header, 'pt-10', 'pl-10', 'pr-10')}
+        >
           {typeof header === 'string' ? (
             <h3 className="text text_type_main-large">{header}</h3>
           ) : (

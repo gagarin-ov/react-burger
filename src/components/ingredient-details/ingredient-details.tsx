@@ -26,27 +26,36 @@ export const IngredientDetails = (): React.JSX.Element => {
   }
 
   return (
-    <div className={styles.details}>
+    <div data-testid="modal-ingredient" className={styles.details}>
       <img className={styles.image} src={ingredient.image_large} alt={ingredient.name} />
-      <p className={clsx(styles.name, 'text', 'text_type_main-medium', 'mt-4')}>
+      <p
+        data-testid="name"
+        className={clsx(styles.name, 'text', 'text_type_main-medium', 'mt-4')}
+      >
         {ingredient.name}
       </p>
       <ul className={clsx(styles.nutrition, 'mt-8')}>
         <li className={styles.item}>
           <p className="text text_type_main-default">Калории,ккал</p>
-          <p className="text text_type_digits-default mt-2">{ingredient.calories}</p>
+          <p data-testid="calories" className="text text_type_digits-default mt-2">
+            {ingredient.calories}
+          </p>
         </li>
         <li className={styles.item}>
           <p className="text text_type_main-default">Белки, г</p>
-          <p className="text text_type_digits-default mt-2">{ingredient.proteins}</p>
+          <p data-testid="proteins" className="text text_type_digits-default mt-2">
+            {ingredient.proteins}
+          </p>
         </li>
         <li className={styles.item}>
           <p className="text text_type_main-default">Жиры, г</p>
-          <p className="text text_type_digits-default mt-2">{ingredient.fat}</p>
+          <p data-testid="fat" className="text text_type_digits-default mt-2">
+            {ingredient.fat}
+          </p>
         </li>
         <li className={styles.item}>
           <p className="text text_type_main-default">Углеводы, г</p>
-          <p className="text text_type_digits-default mt-2">
+          <p data-testid="carbohydrates" className="text text_type_digits-default mt-2">
             {ingredient.carbohydrates}
           </p>
         </li>

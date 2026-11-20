@@ -44,10 +44,16 @@ export const BurgerIngredient = ({
       <Link
         to={`/ingredients/${ingredient._id}`}
         state={{ background: location }}
+        draggable={false}
         className={styles.link}
       >
         {count > 0 && <Counter count={count} size="default" />}
-        <img className={styles.image} src={ingredient.image} alt={ingredient.name} />
+        <img
+          draggable={false}
+          className={styles.image}
+          src={ingredient.image}
+          alt={ingredient.name}
+        />
         <p className={clsx(styles.price, 'text', 'text_type_digits-default', 'mt-1')}>
           {ingredient.price}
           <CurrencyIcon type="primary" />

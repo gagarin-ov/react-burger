@@ -92,7 +92,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
   return (
     <section className={styles.burger_constructor}>
       {!bun && (
-        <div className="pl-8">
+        <div data-testid="empty-top-bun" className="pl-8">
           <BurgerPlaceholder
             type="top"
             caption="Выберите булку"
@@ -102,12 +102,16 @@ export const BurgerConstructor = (): React.JSX.Element => {
         </div>
       )}
       {bun && (
-        <div className="pl-8">
+        <div data-testid="top-bun" className="pl-8">
           <ConstructorBun bun={bun} type="top" />
         </div>
       )}
 
-      <ul ref={listRef} className={clsx(styles.list, 'custom-scroll')}>
+      <ul
+        data-testid="constructor-list"
+        ref={listRef}
+        className={clsx(styles.list, 'custom-scroll')}
+      >
         {ingredients.map((ingredient, index) => (
           <ConstructorIngredient
             key={ingredient.key}
@@ -117,18 +121,18 @@ export const BurgerConstructor = (): React.JSX.Element => {
         ))}
 
         {!ingredients.length && (
-          <div className="pl-8">
+          <li className="pl-8" data-testid="ingredient-placeholder">
             <BurgerPlaceholder
               caption="Выберите начинку"
               ingredientType="ingredient"
               onDrop={(item) => dispatch(addIngredient(item))}
             />
-          </div>
+          </li>
         )}
       </ul>
 
       {!bun && (
-        <div className="pl-8">
+        <div data-testid="empty-bottom-bun" className="pl-8">
           <BurgerPlaceholder
             type="bottom"
             caption="Выберите булку"
@@ -139,7 +143,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
       )}
 
       {bun && (
-        <div className="pl-8">
+        <div data-testid="bottom-bun" className="pl-8">
           <ConstructorBun bun={bun} type="bottom" />
         </div>
       )}

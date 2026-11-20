@@ -81,7 +81,11 @@ export const ConstructorIngredient = ({
   dragRef(dropRef(ref));
 
   return (
-    <li ref={ref} className={clsx(styles.item, isDragging && styles.isDragging)}>
+    <li
+      data-testid={`constructor-ingredient-${index}`}
+      ref={ref}
+      className={clsx(styles.item, isDragging && styles.isDragging)}
+    >
       <DragIcon type="primary" />
       <ConstructorElement
         text={ingredient.name}

@@ -93,7 +93,10 @@ export const BurgerIngredients = (): React.JSX.Element => {
             <h2 ref={groupRef} className="text text_type_main-medium">
               {title}
             </h2>
-            <ul className={clsx(styles.cards, 'mt-6', 'pl-4')}>
+            <ul
+              data-testid={`ingredients-${type}-list`}
+              className={clsx(styles.cards, 'mt-6', 'pl-4')}
+            >
               {ingredients
                 .filter((ingredient) => ingredient.type === type)
                 .map((ingredient) => (

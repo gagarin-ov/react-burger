@@ -85,3 +85,4 @@ export const { setBun, addIngredient, deleteIngredient, moveIngredient } =
   burgerConstructorSlice.actions;
 export const { getBun, getIngredients, getIngredientCounts, getTotalPrice } =
   burgerConstructorSlice.selectors;
+export default burgerConstructorSlice.reducer;
