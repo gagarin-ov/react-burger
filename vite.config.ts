@@ -19,7 +19,7 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
-  base: 'https://github.com/gagarin-ov/react-burger',
+  base: '',
   test: {
     globals: true,
     environment: 'jsdom',

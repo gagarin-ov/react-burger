@@ -37,4 +37,4 @@
 	},
 ```
 
-Деплой по адресу https://gagarin-ov.github.io/react-burger/
+Деплой по адресу https://ovgpraktikum.ru/
