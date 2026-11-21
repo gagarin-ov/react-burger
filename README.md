@@ -36,3 +36,5 @@
 		'@utils': path.resolve(__dirname, './src/utils'),
 	},
 ```
+
+Деплой по адресу https://ovgpraktikum.ru/

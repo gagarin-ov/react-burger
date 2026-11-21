@@ -1,12 +1,22 @@
+import { existsSync } from 'node:fs';
+
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
+ * Учётные данные для записи HAR (E2E_EMAIL / E2E_PASSWORD) можно положить
+ * в .env.e2e — файл в .gitignore. Для обычного прогона тестов они не нужны.
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+if (existsSync('.env.e2e')) {
+  process.loadEnvFile('.env.e2e');
+}
+
+const BASE_URL = 'http://localhost:5173';
+
+/**
+ * Проект записи HAR ходит в реальное API и создаёт настоящий заказ,
+ * поэтому подключается только явно: `npm run e2e:record`.
+ */
+const isRecording = Boolean(process.env.RECORD_HAR);
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -25,55 +35,33 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
-
+    baseURL: BASE_URL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testIgnore: /.*\.record\.ts/,
     },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    ...(isRecording
+      ? [
+          {
+            name: 'record-har',
+            use: { ...devices['Desktop Chrome'] },
+            testMatch: /.*\.record\.ts/,
+            timeout: 120_000,
+          },
+        ]
+      : []),
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    command: 'npm run dev',
+    url: BASE_URL,
+    reuseExistingServer: !process.env.CI,
+    env: { E2E: '1' },
+  },
 });

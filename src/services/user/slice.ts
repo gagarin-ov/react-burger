@@ -53,3 +53,4 @@ export const userSlice = createSlice({
 
 export const { setIsAuthChecked, setUser } = userSlice.actions;
 export const { selectUser, selectIsAuthChecked } = userSlice.selectors;
+export default userSlice.reducer;

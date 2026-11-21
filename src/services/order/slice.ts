@@ -29,3 +29,4 @@ export const orderSlice = createSlice({
 
 export const { setOrder } = orderSlice.actions;
 export const { getOrder } = orderSlice.selectors;
+export default orderSlice.reducer;

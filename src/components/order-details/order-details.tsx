@@ -10,7 +10,10 @@ export const OrderDetails = (): React.JSX.Element => {
   const order = useAppSelector(getOrder);
   return (
     <div className={clsx(styles.order, 'pt-30', 'pb-15')}>
-      <p className={clsx(styles.number, 'text', 'text_type_digits-large')}>
+      <p
+        data-testid="order-number"
+        className={clsx(styles.number, 'text', 'text_type_digits-large')}
+      >
         {String(order?.number).padStart(6, '0')}
       </p>
       <p className="text text_type_main-medium mt-8">идентификатор заказа</p>

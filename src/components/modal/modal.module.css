@@ -21,6 +21,7 @@
 }
 
 .close {
+  margin-left: auto;
   cursor: pointer;
 }
 
